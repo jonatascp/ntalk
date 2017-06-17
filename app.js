@@ -3,7 +3,8 @@ var load = require('express-load');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var methodOverride = require('method-override')
+var methodOverride = require('method-override');
+var error = require('./middleware/error');
 
 var app = express();
 
@@ -17,14 +18,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(methodOverride());
 
-
-// more middleware (executes after routes)
-//app.use(function(req, res, next) {});
-// error handling middleware
-//app.use(function(err, req, res, next) {});
-
-
 app.use(express.static(__dirname + '/public'));
+
+// Ao tentar configurar tratamento de erro, a tela sempre é exibida para qualquer requisicao.
+// app.use(error.notFound);
+// app.use(error.serverError);
 
 load('models').then('controllers').then('routes').into(app);
 
